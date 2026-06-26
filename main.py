@@ -1,7 +1,8 @@
 import telebot
 from telebot import types
 
-BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
+# التوكن المحدث
+BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 SUPPORT = "@elegramSMS_Support27"
@@ -77,7 +78,6 @@ def callback_query(call):
         country = parts[3]
         price, stars = SERVICES[srv_key]["countries"][country]
         
-        # تنسيق متباعد بمسافات إضافية
         details = f"""📝 **تفاصيل الطلب:**
 
 الدولة: {country}
@@ -109,4 +109,5 @@ def callback_query(call):
 @bot.message_handler(commands=['start'])
 def start(m): send_main_menu(m)
 
+print("البوت يعمل الآن...")
 bot.polling(none_stop=True)
