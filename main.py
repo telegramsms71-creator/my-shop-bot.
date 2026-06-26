@@ -3,7 +3,7 @@ import telebot
 # الإعدادات
 BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
 ADMIN_ID = 8767607098
-SUPPORT = "@elegramSMS_Support27"
+SUPPORT = "@elegramSMS_Support23"
 CHANNELS = ["@sms20262", "@sms202622", "@tanadolsms", "@freemoney20262"]
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -44,15 +44,11 @@ def check_sub(user_id):
 
 def send_main_menu(m):
     kb = telebot.types.InlineKeyboardMarkup()
-    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_tg"]["name"], callback_data="btn_tg"))
-    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_fb"]["name"], callback_data="btn_fb"),
-           telebot.types.InlineKeyboardButton(SERVICES["btn_ig"]["name"], callback_data="btn_ig"))
-    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_tt"]["name"], callback_data="btn_tt"),
-           telebot.types.InlineKeyboardButton(SERVICES["btn_apple"]["name"], callback_data="btn_apple"))
-    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_payp"]["name"], callback_data="btn_payp"))
-    
-    kb.add(telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"))
-    kb.add(telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"))
+    # استخدام kb.row لضمان كل زر في سطر منفصل
+    for key, val in SERVICES.items():
+        kb.row(telebot.types.InlineKeyboardButton(val["name"], callback_data=key))
+    kb.row(telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"))
+    kb.row(telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"))
     
     text = f"✨ **أهلاً بك في المتجر الرسمي**\n\n🆔 **معرفك:** `{m.chat.id}`\n💰 **رصيدك:** `0.00$`\n---\nاختر من القائمة أدناه:"
     bot.send_message(m.chat.id, text, reply_markup=kb, parse_mode="Markdown")
@@ -63,8 +59,8 @@ def start(m):
     if check_sub(m.chat.id): send_main_menu(m)
     else:
         kb = telebot.types.InlineKeyboardMarkup()
-        for ch in CHANNELS: kb.add(telebot.types.InlineKeyboardButton(f"اشترك في {ch}", url=f"https://t.me/{ch[1:]}"))
-        kb.add(telebot.types.InlineKeyboardButton("🔄 تحقق من الاشتراك", callback_data="check_sub"))
+        for ch in CHANNELS: kb.row(telebot.types.InlineKeyboardButton(f"اشترك في {ch}", url=f"https://t.me/{ch[1:]}"))
+        kb.row(telebot.types.InlineKeyboardButton("🔄 تحقق من الاشتراك", callback_data="check_sub"))
         bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في القنوات أولاً:**", reply_markup=kb)
 
 @bot.message_handler(commands=['broadcast'])
@@ -80,7 +76,6 @@ def callback(call):
     cid, mid = call.message.chat.id, call.message.message_id
     if call.data == "check_sub":
         if check_sub(cid): bot.delete_message(cid, mid); send_main_menu(call.message)
-        else: bot.answer_callback_query(call.id, "❌ لم تشترك بعد!")
     
     elif call.data.startswith("order_"):
         data = call.data.split("_")
@@ -88,21 +83,21 @@ def callback(call):
         price_stars = int(float(price_usdt) * 100)
         
         text = f"📄 **تفاصيل الطلب:**\n\n🏷 **الخدمة:** `{data[1]}`\n💳 **السعر:** `{price_usdt} USDT / ⭐ {price_stars} نجمة`\n\nاختر طريقة الشراء:"
-        kb = telebot.types.InlineKeyboardMarkup(row_width=1)
-        kb.add(telebot.types.InlineKeyboardButton("💳 شراء بـ USDT", url=f"https://t.me/{SUPPORT[1:]}"),
-               telebot.types.InlineKeyboardButton("🌟 شراء بالنجوم", callback_data="buy_s"),
-               telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
+        kb = telebot.types.InlineKeyboardMarkup()
+        kb.row(telebot.types.InlineKeyboardButton("💳 شراء بـ USDT", url=f"https://t.me/{SUPPORT[1:]}"))
+        kb.row(telebot.types.InlineKeyboardButton("🌟 شراء بالنجوم", url=f"https://t.me/{SUPPORT[1:]}"))
+        kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
         bot.edit_message_text(text, cid, mid, reply_markup=kb, parse_mode="Markdown")
         
     elif call.data in SERVICES:
         srv = SERVICES[call.data]
-        kb = telebot.types.InlineKeyboardMarkup(row_width=1)
-        for c, p in srv["items"].items(): kb.add(telebot.types.InlineKeyboardButton(f"{c} | {p}", callback_data=f"order_{c}_{p}"))
-        kb.add(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
+        kb = telebot.types.InlineKeyboardMarkup()
+        for c, p in srv["items"].items(): kb.row(telebot.types.InlineKeyboardButton(f"{c} | {p}", callback_data=f"order_{c}_{p}"))
+        kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
         bot.edit_message_text(f"🛍 **خدمات {srv['name']}**", cid, mid, reply_markup=kb)
         
     elif call.data == "btn_pay":
-        kb = telebot.types.InlineKeyboardMarkup(); kb.add(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
+        kb = telebot.types.InlineKeyboardMarkup(); kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
         bot.edit_message_text(PAYMENT_TEXT, cid, mid, reply_markup=kb, parse_mode="Markdown")
     
     elif call.data == "back_main":
