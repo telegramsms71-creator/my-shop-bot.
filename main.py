@@ -4,9 +4,9 @@ from telebot import types
 BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 
-SUPPORT = "@elegramSMS_Support23"
+SUPPORT = "@elegramSMS_Support27"
 
-# --- دالة عرض الأرقام والأسعار (بتنسيق متباعد) ---
+# --- دالة عرض الأرقام والأسعار ---
 def show_details(call, title, content):
     text = f"💎 **{title}**:\n\n{content}\n\n⚠️ *يرجى التواصل مع الدعم لإتمام الطلب.*"
     kb = types.InlineKeyboardMarkup()
@@ -14,7 +14,15 @@ def show_details(call, title, content):
     kb.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_main"))
     bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=kb, parse_mode="Markdown")
 
-# --- قائمة طرق الدفع (بفواصل متباعدة) ---
+# --- دالة عرض متجر النجوم ---
+def show_stars(call):
+    text = "⭐️ **متجر النجوم:**\n\n• النجمة الواحدة: `0.015$`\n\n• دب: `0.2$`\n\n• وردة: `0.29$`\n\n• كيكة: `0.55$`\n\n• خاتم: `1.1$`"
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton("📞 التواصل مع الدعم", url=f"https://t.me/{SUPPORT[1:]}"))
+    kb.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_main"))
+    bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=kb, parse_mode="Markdown")
+
+# --- دالة عرض طرق الدفع ---
 def send_payment_methods(call):
     text = """💳 **طرق الدفع المتوفرة:**
 
@@ -44,51 +52,33 @@ def send_payment_methods(call):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if call.data == "btn_tg":
-        show_details(call, "Telegram", "• USA: 0.25$\n\n• Egypt: 0.50$\n\n• Syria: 1.10$\n\n• India: 0.30$")
+        show_details(call, "Telegram", "• USA: 0.25$\n\n• Egypt: 0.50$\n\n• Syria: 1.10$")
     elif call.data == "btn_tinder":
         show_details(call, "Tinder", "• Indonesia: 0.20$\n\n• Mozambique: 0.30$")
-    elif call.data == "btn_fb":
-        show_details(call, "Facebook", "• Germany: 0.20$\n\n• Sudan: 0.20$\n\n• Jordan: 0.30$\n\n• Ghana: 0.25$")
-    elif call.data == "btn_ig":
-        show_details(call, "Instagram", "• Ghana: 0.25$\n\n• Jordan: 0.30$")
-    elif call.data == "btn_tt":
-        show_details(call, "TikTok", "• Norway: 0.30$")
-    elif call.data == "btn_goog":
-        show_details(call, "Google", "• Venezuela: 0.20$")
-    elif call.data == "btn_apple":
-        show_details(call, "Apple", "• Sudan: 0.30$\n\n• Zimbabwe: 0.25$")
+    elif call.data == "btn_stars":
+        show_stars(call)
     elif call.data == "btn_pay":
         send_payment_methods(call)
     elif call.data == "back_main":
-        send_main_menu(call)
+        send_main_menu(call.message)
 
-def send_main_menu(call):
+def send_main_menu(m):
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
         types.InlineKeyboardButton("🔥 Tinder", callback_data="btn_tinder"),
         types.InlineKeyboardButton("✈️ Telegram", callback_data="btn_tg"),
-        types.InlineKeyboardButton("🔵 Facebook", callback_data="btn_fb"),
-        types.InlineKeyboardButton("📸 Instagram", callback_data="btn_ig"),
-        types.InlineKeyboardButton("🎵 TikTok", callback_data="btn_tt"),
-        types.InlineKeyboardButton("🔍 Google", callback_data="btn_goog"),
-        types.InlineKeyboardButton("🍎 Apple", callback_data="btn_apple"),
-        types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay")
+        types.InlineKeyboardButton("⭐️ متجر النجوم", callback_data="btn_stars"),
+        types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"),
+        types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}")
     )
-    bot.edit_message_text("🌐 **القائمة الرئيسية - اختر الخدمة:**", call.message.chat.id, call.message.message_id, reply_markup=kb, parse_mode="Markdown")
+    # تعديل: نستخدم edit إذا كانت رسالة موجودة، أو send إذا كانت جديدة
+    if hasattr(m, 'message_id'):
+        bot.edit_message_text("🌐 **القائمة الرئيسية - اختر الخدمة:**", m.chat.id, m.message_id, reply_markup=kb, parse_mode="Markdown")
+    else:
+        bot.send_message(m.chat.id, "🌐 **القائمة الرئيسية - اختر الخدمة:**", reply_markup=kb, parse_mode="Markdown")
 
 @bot.message_handler(commands=['start'])
 def start(m):
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    kb.add(
-        types.InlineKeyboardButton("🔥 Tinder", callback_data="btn_tinder"),
-        types.InlineKeyboardButton("✈️ Telegram", callback_data="btn_tg"),
-        types.InlineKeyboardButton("🔵 Facebook", callback_data="btn_fb"),
-        types.InlineKeyboardButton("📸 Instagram", callback_data="btn_ig"),
-        types.InlineKeyboardButton("🎵 TikTok", callback_data="btn_tt"),
-        types.InlineKeyboardButton("🔍 Google", callback_data="btn_goog"),
-        types.InlineKeyboardButton("🍎 Apple", callback_data="btn_apple"),
-        types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay")
-    )
-    bot.send_message(m.chat.id, "مرحباً بك! اختر الخدمة:", reply_markup=kb)
+    send_main_menu(m)
 
 bot.polling(none_stop=True)
