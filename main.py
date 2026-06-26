@@ -4,7 +4,7 @@ from telebot import types
 BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 
-SUPPORT = "@elegramSMS_Support23"
+SUPPORT = "@elegramSMS_Support27"
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262", "@tanadolsms"]
 ADMIN_ID = 8767607098 
 
@@ -20,18 +20,12 @@ def check_sub(uid):
         except: return False
     return True
 
-# --- عرض التفاصيل (أسعار الدول) ---
+# --- عرض التفاصيل ---
 def show_details(call, title, content):
-    text = f"💎 **{title}**:\n\n{content}\n\n⚠️ *يرجى التواصل مع الدعم لإتمام الطلب.*"
+    text = f"💎 **خدمة {title}**:\n\n{content}\n\n⚠️ *يرجى التواصل مع الدعم لإتمام الطلب.*"
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("📞 التواصل مع الدعم", url=f"https://t.me/{SUPPORT[1:]}"))
     kb.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_main"))
-    bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=kb, parse_mode="Markdown")
-
-# --- عرض متجر النجوم ---
-def show_stars(call):
-    text = "⭐️ **متجر النجوم:**\n\n• النجمة الواحدة: `0.015$`\n\n• دب: `0.2$`\n\n• وردة: `0.29$`\n\n• كيكة: `0.55$`\n\n• خاتم: `1.1$`"
-    kb = types.InlineKeyboardMarkup(); kb.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_main"))
     bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=kb, parse_mode="Markdown")
 
 # --- عرض طرق الدفع ---
@@ -54,7 +48,26 @@ def send_payment_methods(call):
     kb = types.InlineKeyboardMarkup(); kb.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_main"))
     bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=kb, parse_mode="Markdown")
 
-# --- القائمة الرئيسية ---
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    # ربط جميع الأزرار بالوظائف
+    if call.data == "btn_tg": show_details(call, "Telegram", "• USA: 0.25$\n• Egypt: 0.50$\n• Syria: 1.10$")
+    elif call.data == "btn_tinder": show_details(call, "Tinder", "• Indonesia: 0.20$\n• Mozambique: 0.30$")
+    elif call.data == "btn_fb": show_details(call, "Facebook", "• Germany: 0.20$\n• Sudan: 0.20$\n• Jordan: 0.30$")
+    elif call.data == "btn_ig": show_details(call, "Instagram", "• Ghana: 0.25$\n• Jordan: 0.30$")
+    elif call.data == "btn_tt": show_details(call, "TikTok", "• Norway: 0.30$")
+    elif call.data == "btn_goog": show_details(call, "Google", "• Venezuela: 0.20$")
+    elif call.data == "btn_apple": show_details(call, "Apple", "• Sudan: 0.30$\n• Zimbabwe: 0.25$")
+    elif call.data == "btn_stars": 
+        text = "⭐️ **متجر النجوم:**\nنجمة: 0.015$ | دب: 0.2$ | وردة: 0.29$ | كيكة: 0.55$ | خاتم: 1.1$"
+        kb = types.InlineKeyboardMarkup(); kb.add(types.InlineKeyboardButton("🔙 رجوع", callback_data="back_main"))
+        bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=kb)
+    elif call.data == "btn_pay": send_payment_methods(call)
+    elif call.data == "back_main": send_main_menu(call.message)
+    elif call.data == "check_sub":
+        if check_sub(call.message.chat.id): send_main_menu(call.message)
+        else: bot.answer_callback_query(call.id, "❌ اشترك أولاً!")
+
 def send_main_menu(m, edit=True):
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
@@ -66,23 +79,10 @@ def send_main_menu(m, edit=True):
         types.InlineKeyboardButton("🔍 Google", callback_data="btn_goog"),
         types.InlineKeyboardButton("🍎 Apple", callback_data="btn_apple"),
         types.InlineKeyboardButton("⭐️ متجر النجوم", callback_data="btn_stars"),
-        types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"),
-        types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}")
+        types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay")
     )
-    if edit: bot.edit_message_text("🌐 **القائمة الرئيسية:**", m.chat.id, m.message_id, reply_markup=kb, parse_mode="Markdown")
-    else: bot.send_message(m.chat.id, "🌐 **القائمة الرئيسية:**", reply_markup=kb, parse_mode="Markdown")
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback_query(call):
-    if call.data == "btn_tg": show_details(call, "Telegram", "• USA: 0.25$\n• Egypt: 0.50$\n• Syria: 1.10$")
-    elif call.data == "btn_tinder": show_details(call, "Tinder", "• Indonesia: 0.20$\n• Mozambique: 0.30$")
-    elif call.data == "btn_fb": show_details(call, "Facebook", "• Germany: 0.20$\n• Sudan: 0.20$")
-    elif call.data == "btn_stars": show_stars(call)
-    elif call.data == "btn_pay": send_payment_methods(call)
-    elif call.data == "back_main": send_main_menu(call.message)
-    elif call.data == "check_sub":
-        if check_sub(call.message.chat.id): send_main_menu(call.message)
-        else: bot.answer_callback_query(call.id, "❌ اشترك أولاً!")
+    if edit: bot.edit_message_text("🌐 **اختر الخدمة:**", m.chat.id, m.message_id, reply_markup=kb)
+    else: bot.send_message(m.chat.id, "🌐 **اختر الخدمة:**", reply_markup=kb)
 
 @bot.message_handler(commands=['start'])
 def start(m):
@@ -91,7 +91,7 @@ def start(m):
         kb = types.InlineKeyboardMarkup()
         for ch in CHANNELS: kb.add(types.InlineKeyboardButton(f"JOIN {ch}", url=f"https://t.me/{ch[1:]}"))
         kb.add(types.InlineKeyboardButton("✅ تحقق", callback_data="check_sub"))
-        bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في القنوات:**", reply_markup=kb)
+        bot.send_message(m.chat.id, "⚠️ اشترك بالقنوات:", reply_markup=kb)
     else: send_main_menu(m, edit=False)
 
 bot.polling(none_stop=True)
