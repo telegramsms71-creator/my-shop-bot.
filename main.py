@@ -3,7 +3,7 @@ import telebot
 # الإعدادات
 BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
 ADMIN_ID = 8767607098
-SUPPORT = "@elegramSMS_Support23"
+SUPPORT = "@elegramSMS_Support27"
 SUPPORT_STARS = "@elegramSMS_Support27" # اليوزر الجديد للدعم الخاص بالنجوم
 CHANNELS = ["@sms20262", "@sms202622", "@tanadolsms", "@freemoney20262"]
 
