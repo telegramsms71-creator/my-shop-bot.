@@ -1,13 +1,21 @@
 import telebot
 from telebot import types
 
-# التوكن
 BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # إعدادات الدعم والقنوات
 SUPPORT = "@elegramSMS_Support27" 
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262", "@tanadolsms"]
+ADMIN_ID = 8767607098 # الـ ID الخاص بك
+
+# دالة إرسال الإشعار
+def send_notification(user):
+    try:
+        user_info = f"👤 **عضو جديد دخل البوت!**\n\nالاسم: {user.first_name}\nاليوزر: @{user.username}\nالـ ID: `{user.id}`"
+        bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
+    except Exception as e:
+        print(f"Error sending notification: {e}")
 
 # دالة التحقق من الاشتراك
 def check_sub(uid):
@@ -36,9 +44,11 @@ def main_menu(m, edit=False):
     if edit: bot.edit_message_text(text, m.chat.id, m.message_id, reply_markup=kb, parse_mode="Markdown")
     else: bot.send_message(m.chat.id, text, reply_markup=kb, parse_mode="Markdown")
 
-# أمر البدء
 @bot.message_handler(commands=['start'])
 def start(m):
+    # إرسال إشعار الإدارة
+    send_notification(m.from_user)
+    
     if not check_sub(m.chat.id):
         kb = types.InlineKeyboardMarkup()
         for ch in CHANNELS: kb.add(types.InlineKeyboardButton(f"JOIN {ch}", url=f"https://t.me/{ch[1:]}"))
@@ -46,7 +56,6 @@ def start(m):
         bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في جميع القنوات لتشغيل البوت:**", reply_markup=kb, parse_mode="Markdown")
     else: main_menu(m)
 
-# معالجة الأزرار
 @bot.callback_query_handler(func=lambda c: True)
 def cb(c):
     cid, mid = c.message.chat.id, c.message.message_id
@@ -79,5 +88,4 @@ def cb(c):
     elif c.data == "stars":
         bot.edit_message_text("⭐️ **متجر النجوم:**\n\n• النجمة الواحدة = 0.015$\n\n🎁 **الهدايا:**\n\n• دب: $0.2\n\n• وردة: $0.29\n\n• كيكة: $0.55\n\n• خاتم: $1.1", cid, mid, reply_markup=back_kb)
 
-# تشغيل البوت
 bot.polling(none_stop=True)
