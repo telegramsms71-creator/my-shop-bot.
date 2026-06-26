@@ -6,13 +6,6 @@ bot = telebot.TeleBot(BOT_TOKEN)
 SUPPORT = "@elegramSMS_Support20"
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262"]
 
-def check_sub(uid):
-    for ch in CHANNELS:
-        try:
-            if bot.get_chat_member(ch, uid).status in ['left', 'kicked']: return False
-        except: return False
-    return True
-
 def main_menu(m, edit=False):
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
@@ -34,44 +27,55 @@ def cb(c):
     back_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔙 BACK", callback_data="back"))
     
     if c.data == "back": main_menu(c.message, edit=True)
-    elif c.data == "check":
-        if check_sub(cid): main_menu(c.message)
-        else: bot.answer_callback_query(c.id, "❌ Join channels first!", show_alert=True)
     
+    # --- WhatsApp ---
     elif c.data == "cat_wa":
-        text = ("📱 **WhatsApp Pricing:**\n• Nigeria: 20ن ($0.30)\n• Sudan: 15ن ($0.22)\n"
-                "• Venezuela: 25ن ($0.37)\n• Germany: 20ن ($0.30)")
-        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
-        
-    elif c.data == "cat_tg":
-        text = ("✈️ **Telegram Pricing:**\n• USA: 20ن ($0.30)\n• Egypt: 50ن ($0.75)\n"
-                "• Syria: 110ن ($1.65)")
-        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
-        
-    elif c.data == "cat_fb":
-        text = ("🔵 **Facebook Pricing:**\n• Germany: 20ن ($0.30)\n• Jordan: 30ن ($0.45)")
-        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
-        
-    elif c.data == "cat_ig":
-        text = ("📸 **Instagram Pricing:**\n• Ghana: 25ن ($0.37)\n• Jordan: 30ن ($0.45)")
-        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
-        
-    elif c.data == "cat_tt":
-        text = "🎵 **TikTok Pricing:**\n• Norway: 0.3ن ($0.0045)"
+        text = ("📱 **WhatsApp Pricing:**\n"
+                "• Nigeria: $0.20 (20ن) | • Sudan: $0.15 (15ن)\n"
+                "• Venezuela: $0.25 (25ن) | • Ukraine: $0.40 (40ن)\n"
+                "• Gabon: $0.25 (25ن) | • Germany: $0.20 (20ن)\n"
+                "• Ghana: $0.15 (15ن) | • Madagascar: $0.30 (30ن)\n"
+                "• France: $0.50 (50ن)")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
 
+    # --- Telegram ---
+    elif c.data == "cat_tg":
+        text = ("✈️ **Telegram Pricing:**\n"
+                "• USA: $0.25 (20ن) | • Egypt: $0.50 (50ن)\n"
+                "• Syria: $1.10 (110ن) | • India: $0.30 (30ن)\n"
+                "• Mixed: $0.28 (28ن)")
+        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
+
+    # --- Facebook ---
+    elif c.data == "cat_fb":
+        text = ("🔵 **Facebook Pricing:**\n"
+                "• Germany: $0.20 (20ن) | • Madagascar: $0.20 (20ن)\n"
+                "• Sudan: $0.20 (20ن) | • Jordan: $0.30 (30ن)\n"
+                "• Ghana: $0.25 (25ن)")
+        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
+
+    # --- Instagram ---
+    elif c.data == "cat_ig":
+        text = ("📸 **Instagram Pricing:**\n"
+                "• Ghana: $0.25 (25ن) | • Jordan: $0.30 (30ن)")
+        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
+
+    # --- TikTok ---
+    elif c.data == "cat_tt":
+        bot.edit_message_text("🎵 **TikTok Pricing:**\n• Norway: $0.30 (0.3ن)", cid, mid, reply_markup=back_btn)
+
+    # --- Stars Shop ---
     elif c.data == "stars":
         text = ("⭐️ **متجر النجوم والهدايا:**\n\n"
-                "• النجمة الواحدة = 0.015$\n\n"
-                "🎁 **أسعار الهدايا:**\n"
-                "• دب: 0.2$ | • وردة: 0.29$\n"
-                "• كيكة: 0.55$ | • خاتم: 1.1$")
-        bot.edit_message_text(text, cid, mid, reply_markup=back_btn, parse_mode="Markdown")
+                "• النجمة الواحدة = 0.015$\n"
+                "🎁 **الهدايا:**\n"
+                "• دب: $0.2 | • وردة: $0.29 | • كيكة: $0.55 | • خاتم: $1.1")
+        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
 
+    # --- Payment ---
     elif c.data == "pay":
         text = ("💳 **Payment Methods (USDT):**\n\n"
-                "• Polygon: `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n"
-                "• BEP20: `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n"
+                "• Polygon/BEP20: `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n"
                 "• ERC20: `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`\n"
                 "• TRC20: `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn, parse_mode="Markdown")
