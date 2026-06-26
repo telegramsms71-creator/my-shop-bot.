@@ -5,11 +5,11 @@ from telebot import types
 BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# إعدادات الدعم والقنوات (تم إضافة قناة التبادل)
+# إعدادات الدعم والقنوات
 SUPPORT = "@elegramSMS_Support27" 
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262", "@tanadolsms"]
 
-# دالة التحقق من الاشتراك في القنوات
+# دالة التحقق من الاشتراك
 def check_sub(uid):
     for ch in CHANNELS:
         try:
@@ -43,7 +43,7 @@ def start(m):
         kb = types.InlineKeyboardMarkup()
         for ch in CHANNELS: kb.add(types.InlineKeyboardButton(f"JOIN {ch}", url=f"https://t.me/{ch[1:]}"))
         kb.add(types.InlineKeyboardButton("✅ تحقق من الاشتراك", callback_data="check"))
-        bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في جميع القنوات (بما فيها قناة التبادل) لتشغيل البوت:**", reply_markup=kb, parse_mode="Markdown")
+        bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في جميع القنوات لتشغيل البوت:**", reply_markup=kb, parse_mode="Markdown")
     else: main_menu(m)
 
 # معالجة الأزرار
@@ -57,7 +57,7 @@ def cb(c):
     if c.data == "back": main_menu(c.message, edit=True)
     elif c.data == "check":
         if check_sub(cid): main_menu(c.message)
-        else: bot.answer_callback_query(c.id, "❌ لم تشترك في كل القنوات!", show_alert=True)
+        else: bot.answer_callback_query(c.id, "❌ يرجى الاشتراك في جميع القنوات أولاً!", show_alert=True)
     
     # --- الخدمات ---
     elif c.data == "cat_wa":
