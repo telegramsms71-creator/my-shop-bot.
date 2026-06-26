@@ -8,7 +8,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 SUPPORT = "@elegramSMS_Support23"
 
 def main_menu(m, edit=False):
-    kb = types.InlineKeyboardMarkup(row_width=2) # صفين كما كان في الأصل
+    kb = types.InlineKeyboardMarkup(row_width=2) 
     kb.add(
         types.InlineKeyboardButton("🔥 Tinder", callback_data="cat_tinder"),
         types.InlineKeyboardButton("✈️ Telegram", callback_data="cat_tg"),
@@ -18,8 +18,6 @@ def main_menu(m, edit=False):
         types.InlineKeyboardButton("🔍 Google", callback_data="cat_goog"),
         types.InlineKeyboardButton("🍎 Apple", callback_data="cat_apple"),
         types.InlineKeyboardButton("💰 PayPal", callback_data="cat_paypal"),
-        types.InlineKeyboardButton("🎥 YouTube", callback_data="cat_yt"),
-        types.InlineKeyboardButton("🐦 Twitter", callback_data="cat_tw"),
         types.InlineKeyboardButton("⭐️ متجر النجوم", callback_data="stars"),
         types.InlineKeyboardButton("💳 طرق الدفع", callback_data="pay")
     )
@@ -52,10 +50,6 @@ def cb(c):
         bot.edit_message_text("🍎 **Apple Services:**\n\n• Sudan: $0.30 (30ن)\n• Zimbabwe: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_paypal":
         bot.edit_message_text("💰 **PayPal Services:**\n\n• Venezuela: $0.30 (30ن)", cid, mid, reply_markup=back_kb)
-    elif c.data == "cat_yt":
-        bot.edit_message_text("🎥 **YouTube Services:**\n\n• Contact support for details.", cid, mid, reply_markup=back_kb)
-    elif c.data == "cat_tw":
-        bot.edit_message_text("🐦 **Twitter Services:**\n\n• Contact support for details.", cid, mid, reply_markup=back_kb)
         
     elif c.data == "pay":
         bot.edit_message_text("""💳 **طرق الدفع:**
