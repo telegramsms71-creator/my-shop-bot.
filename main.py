@@ -1,43 +1,117 @@
-import requests
-from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import Command
-import asyncio
+import telebot
+from telebot import types
+import os
 
-# مفاتيح العمل (تذكر أن تقوم بتغييرها فوراً بعد النسخ!)
-TOKEN = '8851361153:AAHuWsxPX3S6bDt3mixzL5OzvidSqWSShQM'
-FIVE_SIM_KEY = 'E00ca14d01544541b1156bf1340f6d49'
-SMM_API_KEY = '67ea662a7e0988d93131434df275fcb4'
+# إعداد البوت
+BOT_TOKEN = os.getenv('8851361153:AAHuWsxPX3S6bDt3mixzL5OzvidSqWSShQM')
+bot = telebot.TeleBot(BOT_TOKEN)
 
-bot = Bot(token=TOKEN)
-dp = Dispatcher()
+# بيانات الدعم والقنوات
+SUPPORT_USER = "@elegramSMS_Support20"
+CHANNELS = [
+    {"name": "ربح مجاني", "url": "https://t.me/freemoney20262", "id": "@freemoney20262"},
+    {"name": "تعليمات", "url": "https://t.me/sms202622", "id": "@sms202622"},
+    {"name": "تفعيلات", "url": "https://t.me/sms20262", "id": "@sms20262"}
+]
 
-# دالة لحساب السعر الجديد
-def calculate_price(original_price, profit_percentage):
-    # نضرب في (1 + النسبة) للحصول على السعر الجديد
-    return round(float(original_price) * (1 + (profit_percentage / 100)), 2)
+# دالة التحقق من الاشتراك
+def check_sub(user_id):
+    for ch in CHANNELS:
+        try:
+            status = bot.get_chat_member(ch["id"], user_id).status
+            if status not in ['member', 'administrator', 'creator']:
+                return False
+        except:
+            return False
+    return True
 
-@dp.message(Command("start"))
-async def start(message: types.Message):
-    await message.answer("مرحباً! اختر الخدمة:\n1. طلب رقم (ربح 20%)\n2. طلب متابعين (ربح 5%)")
+# القائمة الرئيسية
+def show_main_menu(chat_id):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    buttons = [
+        types.InlineKeyboardButton("📱 واتساب", callback_data="buy_whatsapp"),
+        types.InlineKeyboardButton("🔵 فيسبوك", callback_data="buy_facebook"),
+        types.InlineKeyboardButton("📸 إنستغرام", callback_data="buy_instagram"),
+        types.InlineKeyboardButton("🎵 تيك توك", callback_data="buy_tiktok"),
+        types.InlineKeyboardButton("✈️ تليجرام", callback_data="buy_telegram"),
+        types.InlineKeyboardButton("⭐ متجر النجوم", callback_data="stars_shop"),
+        types.InlineKeyboardButton("💳 طرق الدفع", callback_data="payment_methods")
+    ]
+    markup.add(*buttons)
+    bot.send_message(chat_id, "🌐 **أهلاً بك في خدمة TELEGRAM SMS**\nاختر الخدمة المطلوبة:", reply_markup=markup)
 
-# مثال لطلب رقم مع إضافة 20% ربح
-@dp.message(F.text == "رقم")
-async def get_price_number(message: types.Message):
-    # نفترض أن السعر الأصلي من الموقع هو 1 دولار
-    original_price = 1.00 
-    final_price = calculate_price(original_price, 20)
-    await message.answer(f"سعر الرقم هو: {final_price}$ (شامل ربح 20%)")
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    if not check_sub(message.from_user.id):
+        markup = types.InlineKeyboardMarkup()
+        for ch in CHANNELS:
+            markup.add(types.InlineKeyboardButton(f"اشترك في {ch['name']} 📢", url=ch["url"]))
+        markup.add(types.InlineKeyboardButton("تحققت من الاشتراك ✅", callback_data="check_join"))
+        bot.send_message(message.chat.id, "⚠️ **عذراً، يجب عليك الاشتراك في قنواتنا أولاً:**", reply_markup=markup)
+        return
+    show_main_menu(message.chat.id)
 
-# مثال لطلب متابعين مع إضافة 5% ربح
-@dp.message(F.text == "متابعين")
-async def get_price_followers(message: types.Message):
-    # نفترض أن السعر الأصلي هو 0.5 دولار
-    original_price = 0.50
-    final_price = calculate_price(original_price, 5)
-    await message.answer(f"سعر 1000 متابع هو: {final_price}$ (شامل ربح 5%)")
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    if call.data == "check_join":
+        if check_sub(call.from_user.id):
+            bot.answer_callback_query(call.id, "شكراً لاشتراكك!")
+            show_main_menu(call.message.chat.id)
+        else:
+            bot.answer_callback_query(call.id, "لم تشترك في جميع القنوات بعد!", show_alert=True)
+            
+    elif call.data == "payment_methods":
+        msg = (
+            "💰 **طرق الدفع المتاحة:**\n\n"
+            "💎 **محفظة TON:**\n`UQBEej0PxeZK8DyVwkAVQznE1FrMi0EbxxJSia7MhS4H1Co7`\n\n"
+            "• **Polygon:** `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n"
+            "• **BEP20:** `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n"
+            "• **ERC20:** `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`\n"
+            "• **TRC20:** `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`\n\n"
+            "🔹 **Cwallet ID:** `61824874`\n"
+            "🔹 **FaucetPay Email:** `telegramsms71@gmail.com`\n\n"
+            f"⚠️ *بعد التحويل، أرسل الإيصال للدعم:* {SUPPORT_USER}"
+        )
+        bot.send_message(call.message.chat.id, msg, parse_mode="Markdown")
 
-async def main():
-    await dp.start_polling(bot)
+    elif call.data == "stars_shop":
+        msg = (
+            "⭐ **متجر النجوم والهدايا:**\n\n"
+            "🌟 النجمة الواحدة: 0.015$\n"
+            "🧸 دب: 0.22$ | 🌹 وردة: 0.32$\n"
+            "🎂 كيكة: 0.7$ | 💍 خاتم: 1.2$\n\n"
+            f"للطلب، تواصل مع الدعم: {SUPPORT_USER}"
+        )
+        bot.send_message(call.message.chat.id, msg)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    elif call.data == "buy_telegram":
+        msg = (
+            "✈️ **أسعار تليجرام:**\n\n"
+            "🇺🇸 أمريكا: 0.25$ (20ن)\n"
+            "🇪🇬 مصر: 0.5$ (50ن)\n"
+            "🇸🇾 سوريا: 1.10$ (110ن)\n"
+            "🇮🇳 الهند: 0.3$ (30ن)\n"
+            "✨ سلام مختلط: 0.28$ (28ن)\n\n"
+            f"للطلب تواصل مع الدعم: {SUPPORT_USER}"
+        )
+        bot.send_message(call.message.chat.id, msg)
+
+    elif call.data == "buy_whatsapp":
+        msg = "📱 **أسعار واتساب:**\n\nنيجيريا: 0.2$ (20ن) | السودان: 0.15$ (15ن)\nفنزويلا: 0.25$ (25ن) | أوكرانيا: 0.4$ (40ن)\nجابون: 0.25$ (25ن) | ألمانيا: 0.2$ (20ن)\nغانا: 0.15$ (15ن) | مدغشقر: 0.3$ (30ن)\nفرنسا: 0.5$ (50ن)"
+        bot.send_message(call.message.chat.id, msg)
+
+    elif call.data == "buy_facebook":
+        msg = "🔵 **أسعار فيسبوك:**\n\nألمانيا: 0.2$ (20ن)\nمدغشقر: 0.2$ (20ن)\nالسودان: 0.2$ (20ن)\nالأردن: 0.3$ (30ن)\nغانا: 0.25$ (25ن)"
+        bot.send_message(call.message.chat.id, msg)
+
+    elif call.data == "buy_instagram":
+        msg = "📸 **أسعار إنستغرام:**\n\nغانا: 0.25$ (25ن)\nالأردن: 0.3$ (30ن)"
+        bot.send_message(call.message.chat.id, msg)
+
+    elif call.data == "buy_tiktok":
+        msg = "🎵 **أسعار تيك توك:**\n\nالنرويج: 0.3$ (0.3ن)"
+        bot.send_message(call.message.chat.id, msg)
+
+    bot.answer_callback_query(call.id)
+
+bot.polling(none_stop=True)
