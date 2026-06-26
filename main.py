@@ -3,7 +3,7 @@ from telebot import types
 import os
 
 # إعداد البوت
-BOT_TOKEN = os.getenv('8851361153:AAHuWsxPX3S6bDt3mixzL5OzvidSqWSShQM')
+BOT_TOKEN = os.getenv('8851361153:AAHEmdqQqfNn9kDt2xHNinQneGa1MBI-9xU')
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # بيانات الدعم والقنوات
