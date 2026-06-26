@@ -3,7 +3,7 @@ import telebot
 # الإعدادات
 BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
 ADMIN_ID = 8767607098
-SUPPORT = "@elegramSMS_Support27"
+SUPPORT = "@elegramSMS_Support23"
 CHANNELS = ["@sms20262", "@sms202622", "@tanadolsms", "@freemoney20262"]
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -11,7 +11,10 @@ users_db = set()
 
 # قائمة الخدمات
 SERVICES = {
-    "btn_tg": {"name": "✈️ تليجرام", "items": {"البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$", "سوريا": "1.10$"}},
+    "btn_tg": {"name": "✈️ تليجرام", "items": {
+        "البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$", "سوريا": "1.10$",
+        "ماينمار": "0.23$", "الهند": "0.18$", "إيران": "0.25$"
+    }},
     "btn_fb": {"name": "🔵 فيسبوك", "items": {"ألمانيا": "0.20$", "السودان": "0.20$", "الأردن": "0.30$"}},
     "btn_ig": {"name": "📸 إنستقرام", "items": {"غانا": "0.25$", "الأردن": "0.30$"}},
     "btn_tt": {"name": "🎵 تيك توك", "items": {"النرويج": "0.30$", "أمريكا": "0.35$"}},
@@ -40,11 +43,17 @@ def check_sub(user_id):
     return True
 
 def send_main_menu(m):
-    kb = telebot.types.InlineKeyboardMarkup(row_width=2)
-    for key, val in SERVICES.items():
-        kb.add(telebot.types.InlineKeyboardButton(val["name"], callback_data=key))
+    kb = telebot.types.InlineKeyboardMarkup()
+    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_tg"]["name"], callback_data="btn_tg"))
+    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_fb"]["name"], callback_data="btn_fb"),
+           telebot.types.InlineKeyboardButton(SERVICES["btn_ig"]["name"], callback_data="btn_ig"))
+    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_tt"]["name"], callback_data="btn_tt"),
+           telebot.types.InlineKeyboardButton(SERVICES["btn_apple"]["name"], callback_data="btn_apple"))
+    kb.row(telebot.types.InlineKeyboardButton(SERVICES["btn_payp"]["name"], callback_data="btn_payp"))
+    
     kb.add(telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"))
     kb.add(telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"))
+    
     text = f"✨ **أهلاً بك في المتجر الرسمي**\n\n🆔 **معرفك:** `{m.chat.id}`\n💰 **رصيدك:** `0.00$`\n---\nاختر من القائمة أدناه:"
     bot.send_message(m.chat.id, text, reply_markup=kb, parse_mode="Markdown")
 
@@ -65,7 +74,6 @@ def broadcast(m):
         for user in users_db:
             try: bot.send_message(user, f"🔔 **إشعار من الإدارة:**\n{msg}")
             except: pass
-        bot.reply_to(m, "✅ تم إرسال الإشعار.")
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
@@ -76,10 +84,14 @@ def callback(call):
     
     elif call.data.startswith("order_"):
         data = call.data.split("_")
-        text = f"📄 **تفاصيل الطلب:**\n\n🏷 **الخدمة:** `{data[1]}`\n💳 **السعر:** `{data[2]}`\n\nاضغط للشراء عبر الدعم:"
-        kb = telebot.types.InlineKeyboardMarkup()
-        kb.add(telebot.types.InlineKeyboardButton("🛒 شراء بـ USDT", url=f"https://t.me/{SUPPORT[1:]}"))
-        kb.add(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
+        price_usdt = data[2].replace("$", "")
+        price_stars = int(float(price_usdt) * 100)
+        
+        text = f"📄 **تفاصيل الطلب:**\n\n🏷 **الخدمة:** `{data[1]}`\n💳 **السعر:** `{price_usdt} USDT / ⭐ {price_stars} نجمة`\n\nاختر طريقة الشراء:"
+        kb = telebot.types.InlineKeyboardMarkup(row_width=1)
+        kb.add(telebot.types.InlineKeyboardButton("💳 شراء بـ USDT", url=f"https://t.me/{SUPPORT[1:]}"),
+               telebot.types.InlineKeyboardButton("🌟 شراء بالنجوم", callback_data="buy_s"),
+               telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
         bot.edit_message_text(text, cid, mid, reply_markup=kb, parse_mode="Markdown")
         
     elif call.data in SERVICES:
