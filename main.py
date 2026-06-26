@@ -1,15 +1,15 @@
 import telebot
 from telebot import types
 
-# 1. الإعدادات
+# التوكن
 BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
-ADMIN_ID = "8767607098"  # الـ ID الخاص بك لتلقي الإشعارات
 bot = telebot.TeleBot(BOT_TOKEN)
 
+# إعدادات الدعم والقنوات (تم إضافة قناة التبادل)
 SUPPORT = "@elegramSMS_Support27" 
-CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262"]
+CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262", "@tanadolsms"]
 
-# 2. دالة التحقق من الاشتراك
+# دالة التحقق من الاشتراك في القنوات
 def check_sub(uid):
     for ch in CHANNELS:
         try:
@@ -18,7 +18,7 @@ def check_sub(uid):
         except: return False
     return True
 
-# 3. القائمة الرئيسية
+# القائمة الرئيسية
 def main_menu(m, edit=False):
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
@@ -36,22 +36,17 @@ def main_menu(m, edit=False):
     if edit: bot.edit_message_text(text, m.chat.id, m.message_id, reply_markup=kb, parse_mode="Markdown")
     else: bot.send_message(m.chat.id, text, reply_markup=kb, parse_mode="Markdown")
 
-# 4. معالج أمر البداية
+# أمر البدء
 @bot.message_handler(commands=['start'])
 def start(m):
-    # إشعار الدخول للمدير
-    user_info = f"🚨 مستخدم جديد: {m.from_user.first_name}\n🆔 ID: {m.from_user.id}\n🔗 @{m.from_user.username}"
-    try: bot.send_message(ADMIN_ID, user_info)
-    except: pass
-
     if not check_sub(m.chat.id):
         kb = types.InlineKeyboardMarkup()
         for ch in CHANNELS: kb.add(types.InlineKeyboardButton(f"JOIN {ch}", url=f"https://t.me/{ch[1:]}"))
         kb.add(types.InlineKeyboardButton("✅ تحقق من الاشتراك", callback_data="check"))
-        bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في القنوات أولاً لتشغيل البوت:**", reply_markup=kb, parse_mode="Markdown")
+        bot.send_message(m.chat.id, "⚠️ **يجب الاشتراك في جميع القنوات (بما فيها قناة التبادل) لتشغيل البوت:**", reply_markup=kb, parse_mode="Markdown")
     else: main_menu(m)
 
-# 5. معالج الأزرار (Callback)
+# معالجة الأزرار
 @bot.callback_query_handler(func=lambda c: True)
 def cb(c):
     cid, mid = c.message.chat.id, c.message.message_id
@@ -62,17 +57,27 @@ def cb(c):
     if c.data == "back": main_menu(c.message, edit=True)
     elif c.data == "check":
         if check_sub(cid): main_menu(c.message)
-        else: bot.answer_callback_query(c.id, "❌ لم تشترك بعد في القنوات!", show_alert=True)
+        else: bot.answer_callback_query(c.id, "❌ لم تشترك في كل القنوات!", show_alert=True)
     
-    # --- منطق عرض الخدمات ---
-    elif c.data == "cat_wa": bot.edit_message_text("📱 **WhatsApp Services:**\n\n• France: $0.50\n• Gabon: $0.25\n• Germany: $0.20\n• Ghana: $0.15\n• Madagascar: $0.30\n• Nigeria: $0.20\n• Sudan: $0.15\n• Ukraine: $0.40\n• Venezuela: $0.25", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-    elif c.data == "cat_tg": bot.edit_message_text("✈️ **Telegram Services:**\n\n• USA: $0.25\n• Egypt: $0.50\n• Syria: $1.10\n• India: $0.30\n• Mixed: $0.28", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-    elif c.data == "cat_fb": bot.edit_message_text("🔵 **Facebook Services:**\n\n• Germany: $0.20\n• Madagascar: $0.20\n• Sudan: $0.20\n• Jordan: $0.30\n• Ghana: $0.25", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-    elif c.data == "cat_ig": bot.edit_message_text("📸 **Instagram Services:**\n\n• Ghana: $0.25\n• Jordan: $0.30", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-    elif c.data == "cat_tt": bot.edit_message_text("🎵 **TikTok Services:**\n\n• Norway: $0.30", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-    elif c.data == "cat_goog": bot.edit_message_text("🔍 **Google Services:**\n\n• Venezuela: $0.20", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
+    # --- الخدمات ---
+    elif c.data == "cat_wa":
+        bot.edit_message_text("📱 **WhatsApp Services:**\n\n• France: $0.50 (50ن)\n\n• Gabon: $0.25 (25ن)\n\n• Germany: $0.20 (20ن)\n\n• Ghana: $0.15 (15ن)\n\n• Madagascar: $0.30 (30ن)\n\n• Nigeria: $0.20 (20ن)\n\n• Sudan: $0.15 (15ن)\n\n• Ukraine: $0.40 (40ن)\n\n• Venezuela: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
+    elif c.data == "cat_tg":
+        bot.edit_message_text("✈️ **Telegram Services:**\n\n• USA: $0.25 (20ن)\n\n• Egypt: $0.50 (50ن)\n\n• Syria: $1.10 (110ن)\n\n• India: $0.30 (30ن)\n\n• Mixed: $0.28 (28ن)", cid, mid, reply_markup=back_kb)
+    elif c.data == "cat_fb":
+        bot.edit_message_text("🔵 **Facebook Services:**\n\n• Germany: $0.20 (20ن)\n\n• Madagascar: $0.20 (20ن)\n\n• Sudan: $0.20 (20ن)\n\n• Jordan: $0.30 (30ن)\n\n• Ghana: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
+    elif c.data == "cat_ig":
+        bot.edit_message_text("📸 **Instagram Services:**\n\n• Ghana: $0.25 (25ن)\n\n• Jordan: $0.30 (30ن)", cid, mid, reply_markup=back_kb)
+    elif c.data == "cat_tt":
+        bot.edit_message_text("🎵 **TikTok Services:**\n\n• Norway: $0.30 (0.3ن)", cid, mid, reply_markup=back_kb)
+    elif c.data == "cat_goog":
+        bot.edit_message_text("🔍 **Google Services:**\n\n• Venezuela: $0.20 (20ن)", cid, mid, reply_markup=back_kb)
     
-    elif c.data == "pay": bot.edit_message_text("💳 **طرق الدفع (USDT):**\n\n🔹 **Polygon/BEP20:** `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n\n🔹 **ERC20:** `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`\n\n🔹 **TRC20:** `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-    elif c.data == "stars": bot.edit_message_text("⭐️ **متجر النجوم:**\n\n• النجمة الواحدة = 0.015$\n🎁 **الهدايا:**\n• دب: $0.2 | وردة: $0.29 | كيكة: $0.55 | خاتم: $1.1", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
+    # --- الدفع والنجوم ---
+    elif c.data == "pay":
+        bot.edit_message_text("💳 **طرق الدفع (USDT):**\n\n🔹 **Polygon:**\n`0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n\n🔹 **BEP20:**\n`0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n\n🔹 **ERC20:**\n`0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`\n\n🔹 **TRC20:**\n`TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
+    elif c.data == "stars":
+        bot.edit_message_text("⭐️ **متجر النجوم:**\n\n• النجمة الواحدة = 0.015$\n\n🎁 **الهدايا:**\n\n• دب: $0.2\n\n• وردة: $0.29\n\n• كيكة: $0.55\n\n• خاتم: $1.1", cid, mid, reply_markup=back_kb)
 
+# تشغيل البوت
 bot.polling(none_stop=True)
