@@ -39,31 +39,34 @@ def cb(c):
         else: bot.answer_callback_query(c.id, "❌ Join channels first!", show_alert=True)
     
     elif c.data == "cat_wa":
-        text = "📱 **WhatsApp Services:**\n- Nigeria: 20ن ($0.30)\n- Sudan: 15ن ($0.22)\n- Venezuela: 25ن ($0.37)\n- Germany: 20ن ($0.30)"
+        text = ("📱 **WhatsApp Pricing:**\n• Nigeria: 20ن ($0.30)\n• Sudan: 15ن ($0.22)\n"
+                "• Venezuela: 25ن ($0.37)\n• Germany: 20ن ($0.30)")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
-    
+        
     elif c.data == "cat_tg":
-        text = "✈️ **Telegram Services:**\n- USA: 20ن ($0.30)\n- Egypt: 50ن ($0.75)\n- Syria: 110ن ($1.65)"
+        text = ("✈️ **Telegram Pricing:**\n• USA: 20ن ($0.30)\n• Egypt: 50ن ($0.75)\n"
+                "• Syria: 110ن ($1.65)")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
         
     elif c.data == "cat_fb":
-        text = "🔵 **Facebook Services:**\n- Germany: 20ن ($0.30)\n- Jordan: 30ن ($0.45)"
+        text = ("🔵 **Facebook Pricing:**\n• Germany: 20ن ($0.30)\n• Jordan: 30ن ($0.45)")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
         
     elif c.data == "cat_ig":
-        text = "📸 **Instagram Services:**\n- Ghana: 25ن ($0.37)\n- Jordan: 30ن ($0.45)"
+        text = ("📸 **Instagram Pricing:**\n• Ghana: 25ن ($0.37)\n• Jordan: 30ن ($0.45)")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
         
     elif c.data == "cat_tt":
-        text = "🎵 **TikTok Services:**\n- Norway: 0.3ن ($0.05)"
+        text = "🎵 **TikTok Pricing:**\n• Norway: 0.3ن ($0.0045)"
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
 
     elif c.data == "stars":
         text = ("⭐️ **متجر النجوم والهدايا:**\n\n"
-                "• النجمة = 0.015$\n\n"
-                "🎁 **الهدايا:**\n"
-                "• دب: 0.2$ | • وردة: 0.29$ | • كيكة: 0.55$ | • خاتم: 1.1$")
-        bot.edit_message_text(text, cid, mid, reply_markup=back_btn)
+                "• النجمة الواحدة = 0.015$\n\n"
+                "🎁 **أسعار الهدايا:**\n"
+                "• دب: 0.2$ | • وردة: 0.29$\n"
+                "• كيكة: 0.55$ | • خاتم: 1.1$")
+        bot.edit_message_text(text, cid, mid, reply_markup=back_btn, parse_mode="Markdown")
 
     elif c.data == "pay":
         text = ("💳 **Payment Methods (USDT):**\n\n"
@@ -72,5 +75,9 @@ def cb(c):
                 "• ERC20: `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`\n"
                 "• TRC20: `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`")
         bot.edit_message_text(text, cid, mid, reply_markup=back_btn, parse_mode="Markdown")
+
+@bot.message_handler(commands=['start'])
+def start(m):
+    main_menu(m)
 
 bot.polling(none_stop=True)
