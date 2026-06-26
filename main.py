@@ -66,11 +66,11 @@ def cb(c):
         else: bot.answer_callback_query(c.id, "❌ يرجى الاشتراك في جميع القنوات أولاً!", show_alert=True)
     
     elif c.data == "cat_tinder":
-        bot.edit_message_text("🔥 **Tinder Services:**\n\n• Indonesia: $0.20 (20ن)\n\n• Mozambique: $0.30 (30ن)\n\n• USA: $0.40 (40ن)\n\n• UK: $0.35 (35ن)\n\n• Canada: $0.35 (35ن)", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("🔥 **Tinder Services:**\n\n• Indonesia: $0.20 (20ن)\n\n• Mozambique: $0.30 (30ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_apple":
         bot.edit_message_text("🍎 **Apple Services:**\n\n• Sudan: $0.30 (30ن)\n\n• Zimbabwe: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_paypal":
-        bot.edit_message_text("💰 **PayPal Services:**\n\n• Venezuela: $0.30 (30ن)\n\n• USA Verified: $2.00 (200ن)\n\n• Global: $1.50 (150ن)", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("💰 **PayPal Services:**\n\n• Venezuela: $0.30 (30ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_tg":
         bot.edit_message_text("✈️ **Telegram Services:**\n\n• USA: $0.25 (20ن)\n\n• Egypt: $0.50 (50ن)\n\n• Syria: $1.10 (110ن)\n\n• India: $0.30 (30ن)\n\n• Mixed: $0.28 (28ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_fb":
