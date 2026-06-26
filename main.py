@@ -1,21 +1,14 @@
 import telebot
 
-# الإعدادات
 BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
-ADMIN_ID = 8767607098
-SUPPORT = "@elegramSMS_Support27"
-SUPPORT_STARS = "@elegramSMS_Support27" # اليوزر الجديد للدعم الخاص بالنجوم
+SUPPORT = "@elegramSMS_Support23"
+SUPPORT_STARS = "@elegramSMS_Support27"
 CHANNELS = ["@sms20262", "@sms202622", "@tanadolsms", "@freemoney20262"]
 
 bot = telebot.TeleBot(BOT_TOKEN)
-users_db = set()
 
-# قائمة الخدمات
 SERVICES = {
-    "btn_tg": {"name": "✈️ تليجرام", "items": {
-        "البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$", "سوريا": "1.10$",
-        "ماينمار": "0.23$", "الهند": "0.18$", "إيران": "0.25$"
-    }},
+    "btn_tg": {"name": "✈️ تليجرام", "items": {"البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$", "سوريا": "1.10$"}},
     "btn_fb": {"name": "🔵 فيسبوك", "items": {"ألمانيا": "0.20$", "السودان": "0.20$", "الأردن": "0.30$"}},
     "btn_ig": {"name": "📸 إنستقرام", "items": {"غانا": "0.25$", "الأردن": "0.30$"}},
     "btn_tt": {"name": "🎵 تيك توك", "items": {"النرويج": "0.30$", "أمريكا": "0.35$"}},
@@ -23,69 +16,52 @@ SERVICES = {
     "btn_payp": {"name": "💰 باي بال", "items": {"فنزويلا": "0.30$", "مصر": "0.40$"}}
 }
 
-PAYMENT_TEXT = """💳 **| جميع طرق الدفع المعتمدة:**
-
-💎 **Crypto (USDT):**
-• TRC-20: `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`
-• ERC-20: `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`
-• BEP-20: `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`
-• Polygon: `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`
-
-💎 **شبكة TON:**
-• `UQBEej0PxeZK8DyVwkAVQznE1FrMiEbxxJSia7MhS4H1Co7`
-
-🏦 **محافظ إلكترونية:**
-• C-Wallet: `61824874`
-• FaucetPay: `Telegramsms71@gmail.com`
-"""
-
-def check_sub(user_id):
-    for ch in CHANNELS:
-        try:
-            if bot.get_chat_member(ch, user_id).status in ['left', 'kicked']: return False
-        except: return False
-    return True
-
 def send_main_menu(m):
     kb = telebot.types.InlineKeyboardMarkup()
     for key, val in SERVICES.items():
         kb.row(telebot.types.InlineKeyboardButton(val["name"], callback_data=key))
-    kb.row(telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"))
-    kb.row(telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"))
-    text = f"✨ **أهلاً بك في المتجر الرسمي**\n\n🆔 **معرفك:** `{m.chat.id}`\n💰 **رصيدك:** `0.00$`\n---\nاختر الخدمة المطلوبة:"
-    bot.send_message(m.chat.id, text, reply_markup=kb, parse_mode="Markdown")
+    # تصميم الأزرار الثنائية كما في الصورة
+    kb.row(telebot.types.InlineKeyboardButton("📖 تعليمات", callback_data="none"),
+           telebot.types.InlineKeyboardButton("✅ تفعيلات", callback_data="none"))
+    kb.row(telebot.types.InlineKeyboardButton("💰 ربح", callback_data="none"),
+           telebot.types.InlineKeyboardButton("🔄 تبادل إحالات", callback_data="none"))
+    kb.row(telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"),
+           telebot.types.InlineKeyboardButton("⭐ متجر النجوم", callback_data="none"))
+    kb.row(telebot.types.InlineKeyboardButton("🎁 رابط دعوتك", callback_data="none"),
+           telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"))
+    bot.send_message(m.chat.id, "✨ **أهلاً بك في المتجر الرسمي**\nاختر الخدمة:", reply_markup=kb)
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid, mid = call.message.chat.id, call.message.message_id
     
-    if call.data.startswith("order_"):
-        data = call.data.split("_")
-        price_usdt = data[2].replace("$", "")
-        price_stars = int(float(price_usdt) * 100)
-        
-        text = f"📄 **تفاصيل الطلب:**\n\n🏷 **الخدمة:** `{data[1]}`\n💳 **السعر:** `{price_usdt} USDT / ⭐ {price_stars} نجمة`"
-        
+    if call.data == "btn_pay":
         kb = telebot.types.InlineKeyboardMarkup()
-        # كل زر في صف لوحده عشان لا يتلاصقوا
+        kb.row(telebot.types.InlineKeyboardButton("💎 USDT(TRC20): TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97", callback_data="none"))
+        kb.row(telebot.types.InlineKeyboardButton("💎 USDT(ERC20): 0x8D7dDE7719e9d6D3e5175CE170Fae00372715493", callback_data="none"))
+        kb.row(telebot.types.InlineKeyboardButton("💎 USDT(BEP20): 0x8D7dDE7719e9d6D3e5175CE170Fae00372715493", callback_data="none"))
+        kb.row(telebot.types.InlineKeyboardButton("💎 TON: UQBEej0PxeZK8DyVwkAVQznE1FrMiEbxxJSia7MhS4H1Co7", callback_data="none"))
+        kb.row(telebot.types.InlineKeyboardButton("🏦 C-Wallet: 61824874", callback_data="none"))
+        kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
+        bot.edit_message_text("💳 **طرق الدفع (اضغط للنسخ):**", cid, mid, reply_markup=kb)
+
+    elif call.data.startswith("order_"):
+        data = call.data.split("_")
+        text = f"📄 **الخدمة:** {data[1]}\n💰 **السعر:** {data[2]}"
+        kb = telebot.types.InlineKeyboardMarkup()
         kb.row(telebot.types.InlineKeyboardButton("💳 شراء بـ USDT", url=f"https://t.me/{SUPPORT[1:]}"))
         kb.row(telebot.types.InlineKeyboardButton("🌟 شراء بالنجوم", url=f"https://t.me/{SUPPORT_STARS[1:]}"))
-        kb.row(telebot.types.InlineKeyboardButton("🔙 عودة للقائمة", callback_data="back_main"))
-        bot.edit_message_text(text, cid, mid, reply_markup=kb, parse_mode="Markdown")
-        
-    elif call.data in SERVICES:
-        srv = SERVICES[call.data]
-        kb = telebot.types.InlineKeyboardMarkup()
-        for c, p in srv["items"].items(): kb.row(telebot.types.InlineKeyboardButton(f"{c} | {p}", callback_data=f"order_{c}_{p}"))
         kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
-        bot.edit_message_text(f"🛍 **اختر الدولة لـ {srv['name']}**", cid, mid, reply_markup=kb)
-        
-    elif call.data == "btn_pay":
-        kb = telebot.types.InlineKeyboardMarkup(); kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
-        bot.edit_message_text(PAYMENT_TEXT, cid, mid, reply_markup=kb, parse_mode="Markdown")
+        bot.edit_message_text(text, cid, mid, reply_markup=kb)
+
+    elif call.data in SERVICES:
+        kb = telebot.types.InlineKeyboardMarkup()
+        for c, p in SERVICES[call.data]["items"].items():
+            kb.row(telebot.types.InlineKeyboardButton(f"{c} | {p}", callback_data=f"order_{c}_{p}"))
+        kb.row(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
+        bot.edit_message_text("اختر الدولة:", cid, mid, reply_markup=kb)
         
     elif call.data == "back_main":
         bot.delete_message(cid, mid); send_main_menu(call.message)
-# ... باقي دالة الـ start و broadcast كما هي ...
 
 bot.polling(none_stop=True)
