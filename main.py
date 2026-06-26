@@ -2,7 +2,7 @@ hereimport telebot
 from telebot import types
 
 # الإعدادات
-BOT_TOKEN = "8851361153:AAHEmdqQqfNn9kDt2xHNinQneGa1MBI-9xU"
+BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 SUPPORT = "@elegramSMS_Support23" # تم تحديثه لـ 23 حسب طلبك الأخير
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262"]
