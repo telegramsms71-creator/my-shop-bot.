@@ -5,7 +5,7 @@ BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # إعدادات
-SUPPORT = "@elegramSMS_Support23"
+SUPPORT = "@elegramSMS_Support27"
 
 def main_menu(m, edit=False):
     kb = types.InlineKeyboardMarkup(row_width=2) 
