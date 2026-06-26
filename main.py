@@ -1,4 +1,4 @@
-import telebot
+Import telebot
 from telebot import types
 
 # التوكن المحدث
@@ -6,7 +6,7 @@ BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # تم تحديث اليوزر هنا
-SUPPORT = "@elegramSMS_Support20" 
+SUPPORT = "@elegramSMS_Support27" 
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262"]
 
 # دالة التحقق من الاشتراك
