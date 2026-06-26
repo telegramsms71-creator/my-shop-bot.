@@ -1,15 +1,15 @@
 import telebot
 
-# الإعدادات الأساسية
+# --- الإعدادات ---
 BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
 ADMIN_ID = 8767607098
 SUPPORT = "@elegramSMS_Support23"
 CHANNELS = ["@sms20262", "@sms202622", "@tanadolsms", "@freemoney20262"]
 
 bot = telebot.TeleBot(BOT_TOKEN)
-users_db = set() # لحفظ المستخدمين للإشعارات
+users_db = set() 
 
-# قاعدة بيانات الخدمات
+# --- بيانات الخدمات ---
 SERVICES = {
     "btn_tg": {"name": "✈️ تليجرام", "items": {"البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$", "سوريا": "1.10$", "مصر": "0.50$", "نيجيريا": "0.40$"}},
     "btn_fb": {"name": "🔵 فيسبوك", "items": {"ألمانيا": "0.20$", "السودان": "0.20$", "الأردن": "0.30$", "مصر": "0.25$"}},
@@ -19,15 +19,19 @@ SERVICES = {
     "btn_paypal": {"name": "💰 باي بال", "items": {"فنزويلا": "0.30$", "مصر": "0.40$"}}
 }
 
+# --- نصوص ---
 PAYMENT_TEXT = """💳 **| جميع طرق الدفع المعتمدة:**
 💎 **Crypto:**
 • USDT (TRC-20): `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`
 • USDT (ERC-20): `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`
 • USDT (Polygon): `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`
-• TON: `UQBEej0PxeZK8DyVwkAVQznE1FrMiEbxxJSia7MhS4H1Co7`
-🏦 **محافظ:**
+• TON Network: `UQBEej0PxeZK8DyVwkAVQznE1FrMiEbxxJSia7MhS4H1Co7`
+
+🏦 **محافظ إلكترونية:**
 • C-Wallet: `61824874`
-• FaucetPay: `Telegramsms71@gmail.com`"""
+• FaucetPay: `Telegramsms71@gmail.com`
+
+⚠️ *يرجى إرسال صورة الإيصال للدعم بعد التحويل.*"""
 
 def check_sub(user_id):
     for ch in CHANNELS:
@@ -40,11 +44,11 @@ def send_main_menu(m):
     kb = telebot.types.InlineKeyboardMarkup(row_width=2)
     for key, val in SERVICES.items():
         kb.add(telebot.types.InlineKeyboardButton(val["name"], callback_data=key))
-    kb.add(telebot.types.InlineKeyboardButton("⭐️ متجر النجوم", callback_data="btn_stars"),
-           telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"),
-           telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"),
-           telebot.types.InlineKeyboardButton("🎁 رابط دعوتك", callback_data="btn_ref"))
-    bot.send_message(m.chat.id, "✨ **أهلاً بك في المتجر الرسمي:**", reply_markup=kb)
+    kb.add(telebot.types.InlineKeyboardButton("💳 طرق الدفع", callback_data="btn_pay"),
+           telebot.types.InlineKeyboardButton("📞 الدعم الفني", url=f"https://t.me/{SUPPORT[1:]}"))
+    
+    welcome_text = f"✨ **أهلاً بك في المتجر الرسمي**\n\n🆔 **معرفك:** `{m.chat.id}`\n💰 **رصيدك:** `0.00$`\n---\nاختر من القائمة أدناه:"
+    bot.send_message(m.chat.id, welcome_text, reply_markup=kb, parse_mode="Markdown")
 
 @bot.message_handler(commands=['start'])
 def start(m):
@@ -61,24 +65,22 @@ def broadcast(m):
     if m.chat.id == ADMIN_ID:
         msg = m.text.replace("/broadcast ", "")
         for user in users_db:
-            try: bot.send_message(user, f"🔔 **إشعار هام:**\n{msg}")
+            try: bot.send_message(user, f"🔔 **إشعار من الإدارة:**\n{msg}")
             except: pass
+        bot.reply_to(m, "✅ تم إرسال الإشعار.")
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid, mid = call.message.chat.id, call.message.message_id
     if call.data == "check_sub":
-        if check_sub(cid):
-            bot.delete_message(cid, mid); send_main_menu(call.message)
-        else: bot.answer_callback_query(call.id, "❌ لم تشترك بعد!")
-    elif call.data == "btn_ref":
-        bot.send_message(cid, f"🎁 **رابط الدعوة:** `https://t.me/sms2221bot?start={cid}`")
+        if check_sub(cid): bot.delete_message(cid, mid); send_main_menu(call.message)
+        else: bot.answer_callback_query(call.id, "❌ لم تشترك في كل القنوات!")
     elif call.data in SERVICES:
         srv = SERVICES[call.data]
-        kb = telebot.types.InlineKeyboardMarkup()
+        kb = telebot.types.InlineKeyboardMarkup(row_width=1)
         for c, p in srv["items"].items(): kb.add(telebot.types.InlineKeyboardButton(f"{c} | {p}", callback_data="order"))
         kb.add(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
-        bot.edit_message_text(f"🛍 **{srv['name']}**", cid, mid, reply_markup=kb)
+        bot.edit_message_text(f"🛍 **خدمات {srv['name']}**", cid, mid, reply_markup=kb)
     elif call.data == "btn_pay":
         kb = telebot.types.InlineKeyboardMarkup(); kb.add(telebot.types.InlineKeyboardButton("🔙 عودة", callback_data="back_main"))
         bot.edit_message_text(PAYMENT_TEXT, cid, mid, reply_markup=kb, parse_mode="Markdown")
