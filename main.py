@@ -2,21 +2,21 @@ import telebot
 
 # الإعدادات
 BOT_TOKEN = "8851361153:AAE_adap5TIOw1mmG8RHZWsn1Bk80SyVx8c"
-ADMIN_ID = "8767607098" # تم وضع الأيدي الخاص بك هنا
-SUPPORT = "@elegramSMS_Support27"
+ADMIN_ID = "8767607098"
+SUPPORT = "@elegramSMS_Support23"
 SUPPORT_STARS = "@elegramSMS_Support27"
 CHANNELS = ["@sms20262", "@sms202622", "@tanadolsms", "@freemoney20262"]
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# الخدمات والهدايا
+# قائمة شاملة لكل الدول والخدمات
 SERVICES_DATA = {
-    "btn_tg": {"name": "✈️ تليجرام", "items": {"البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$"}},
-    "btn_fb": {"name": "🔵 فيسبوك", "items": {"ألمانيا": "0.20$", "السودان": "0.20$", "الأردن": "0.30$"}},
-    "btn_ig": {"name": "📸 إنستقرام", "items": {"غانا": "0.25$", "الأردن": "0.30$"}},
-    "btn_tt": {"name": "🎵 تيك توك", "items": {"النرويج": "0.30$", "أمريكا": "0.35$"}},
-    "btn_apple": {"name": "🍎 أبل", "items": {"السودان": "0.30$", "زيمبابوي": "0.25$"}},
-    "btn_payp": {"name": "💰 باي بال", "items": {"فنزويلا": "0.30$", "مصر": "0.40$"}}
+    "btn_tg": {"name": "✈️ تليجرام", "items": {"البرازيل": "0.50$", "كندا": "0.30$", "أمريكا": "0.40$", "سوريا": "1.10$", "ماينمار": "0.23$", "الهند": "0.18$", "إيران": "0.25$", "باكستان": "0.20$", "روسيا": "0.30$"}},
+    "btn_fb": {"name": "🔵 فيسبوك", "items": {"ألمانيا": "0.20$", "السودان": "0.20$", "الأردن": "0.30$", "مصر": "0.40$", "العراق": "0.35$", "المغرب": "0.25$", "لبنان": "0.30$"}},
+    "btn_ig": {"name": "📸 إنستقرام", "items": {"غانا": "0.25$", "الأردن": "0.30$", "المغرب": "0.40$", "تونس": "0.35$", "الجزائر": "0.30$", "ليبيا": "0.45$"}},
+    "btn_tt": {"name": "🎵 تيك توك", "items": {"النرويج": "0.30$", "أمريكا": "0.35$", "تركيا": "0.25$", "السعودية": "0.50$", "الكويت": "0.60$"}},
+    "btn_apple": {"name": "🍎 أبل", "items": {"السودان": "0.30$", "زيمبابوي": "0.25$", "نيجيريا": "0.45$", "كينيا": "0.35$", "جنوب أفريقيا": "0.40$"}},
+    "btn_payp": {"name": "💰 باي بال", "items": {"فنزويلا": "0.30$", "مصر": "0.40$", "ليبيا": "0.50$", "اليمن": "0.60$", "عمان": "0.70$"}}
 }
 
 GIFTS = {
@@ -55,19 +55,11 @@ def start(m):
     else:
         send_main_menu(m)
 
-# أمر الإشعارات
-@bot.message_handler(commands=['broadcast'])
-def broadcast(m):
-    if str(m.chat.id) == ADMIN_ID:
-        # ملاحظة: لإرسال الإشعار للكل، يجب أن يكون لديك قاعدة بيانات لحفظ الـ user_id للمشتركين
-        bot.send_message(m.chat.id, "✅ تم تفعيل أمر الإشعارات (يرجى ربط قاعدة بيانات لإرسال الرسالة لكل الأعضاء).")
-
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid, mid = call.message.chat.id, call.message.message_id
     if call.data == "check_sub":
-        if check_sub(cid):
-            bot.delete_message(cid, mid); send_main_menu(call.message)
+        if check_sub(cid): bot.delete_message(cid, mid); send_main_menu(call.message)
         else: bot.answer_callback_query(call.id, "❌ لم تشترك بعد!")
     
     elif call.data == "btn_pay":
