@@ -7,9 +7,8 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # إعدادات
 SUPPORT = "@elegramSMS_Support27" 
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262", "@tanadolsms"]
-ADMIN_ID = 8767607098 # الـ ID المعتمد للإشعارات
+ADMIN_ID = 8767607098 
 
-# دالة إرسال الإشعار
 def send_notification(user):
     try:
         user_info = f"👤 **عضو جديد دخل البوت!**\n\nالاسم: {user.first_name}\nاليوزر: @{user.username}\nالـ ID: `{user.id}`"
@@ -65,20 +64,20 @@ def cb(c):
         else: bot.answer_callback_query(c.id, "❌ يرجى الاشتراك في جميع القنوات أولاً!", show_alert=True)
     
     elif c.data == "cat_wa":
-        bot.edit_message_text("📱 **WhatsApp Services:**\n\n• USA: $0.35 (35ن)\n• France: $0.50 (50ن)\n• Gabon: $0.25 (25ن)\n• Germany: $0.20 (20ن)\n• Ghana: $0.15 (15ن)\n• Madagascar: $0.30 (30ن)\n• Nigeria: $0.20 (20ن)\n• Sudan: $0.15 (15ن)\n• Ukraine: $0.40 (40ن)\n• Venezuela: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("📱 **WhatsApp Services:**\n\n• USA: $0.35 (35ن)\n\n• France: $0.50 (50ن)\n\n• Gabon: $0.25 (25ن)\n\n• Germany: $0.20 (20ن)\n\n• Ghana: $0.15 (15ن)\n\n• Madagascar: $0.30 (30ن)\n\n• Nigeria: $0.20 (20ن)\n\n• Sudan: $0.15 (15ن)\n\n• Ukraine: $0.40 (40ن)\n\n• Venezuela: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_tg":
-        bot.edit_message_text("✈️ **Telegram Services:**\n\n• USA: $0.25 (20ن)\n• Egypt: $0.50 (50ن)\n• Syria: $1.10 (110ن)\n• India: $0.30 (30ن)\n• Mixed: $0.28 (28ن)", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("✈️ **Telegram Services:**\n\n• USA: $0.25 (20ن)\n\n• Egypt: $0.50 (50ن)\n\n• Syria: $1.10 (110ن)\n\n• India: $0.30 (30ن)\n\n• Mixed: $0.28 (28ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_fb":
-        bot.edit_message_text("🔵 **Facebook Services:**\n\n• Germany: $0.20 (20ن)\n• Madagascar: $0.20 (20ن)\n• Sudan: $0.20 (20ن)\n• Jordan: $0.30 (30ن)\n• Ghana: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("🔵 **Facebook Services:**\n\n• Germany: $0.20 (20ن)\n\n• Madagascar: $0.20 (20ن)\n\n• Sudan: $0.20 (20ن)\n\n• Jordan: $0.30 (30ن)\n\n• Ghana: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_ig":
-        bot.edit_message_text("📸 **Instagram Services:**\n\n• Ghana: $0.25 (25ن)\n• Jordan: $0.30 (30ن)", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("📸 **Instagram Services:**\n\n• Ghana: $0.25 (25ن)\n\n• Jordan: $0.30 (30ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_tt":
         bot.edit_message_text("🎵 **TikTok Services:**\n\n• Norway: $0.30 (0.3ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_goog":
         bot.edit_message_text("🔍 **Google Services:**\n\n• Venezuela: $0.20 (20ن)", cid, mid, reply_markup=back_kb)
     
     elif c.data == "pay":
-        bot.edit_message_text("""💳 **طرق الدفع المتاحة (Payment Methods):**
+        bot.edit_message_text("""💳 **طرق الدفع (Payment Methods):**
 
 🔹 **C-Wallet (ID):**
 `61824874`
@@ -86,16 +85,19 @@ def cb(c):
 🔹 **FaucetPay (Email):**
 `Telegramsms71@gmail.com`
 
-🔹 **USDT (Polygon/BEP20):**
+🔹 **USDT Polygon (MATIC):**
 `0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`
 
-🔹 **USDT (ERC20):**
+🔹 **USDT BEP20 (BNB Smart Chain):**
+`0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`
+
+🔹 **USDT ERC20 (Ethereum):**
 `0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`
 
-🔹 **USDT (TRC20):**
+🔹 **USDT TRC20 (Tron):**
 `TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`""", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
         
     elif c.data == "stars":
-        bot.edit_message_text("⭐️ **متجر النجوم:**\n\n• النجمة الواحدة = 0.015$\n\n🎁 **الهدايا:**\n\n• دب: $0.2\n• وردة: $0.29\n• كيكة: $0.55\n• خاتم: $1.1", cid, mid, reply_markup=back_kb)
+        bot.edit_message_text("⭐️ **متجر النجوم:**\n\n• النجمة الواحدة = 0.015$\n\n🎁 **الهدايا:**\n\n• دب: $0.2\n\n• وردة: $0.29\n\n• كيكة: $0.55\n\n• خاتم: $1.1", cid, mid, reply_markup=back_kb)
 
 bot.polling(none_stop=True)
