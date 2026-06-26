@@ -1,10 +1,10 @@
-hereimport telebot
+import telebot
 from telebot import types
 
-# الإعدادات
+# التوكن المحدث
 BOT_TOKEN = "8851361153:AAHfG-uIBWfHfuYD79iVK6oKRWbg-20ytH4"
 bot = telebot.TeleBot(BOT_TOKEN)
-SUPPORT = "@elegramSMS_Support23" # تم تحديثه لـ 23 حسب طلبك الأخير
+SUPPORT = "@elegramSMS_Support23"
 CHANNELS = ["@freemoney20262", "@sms202622", "@sms20262"]
 
 # دالة التحقق من الاشتراك
@@ -53,9 +53,9 @@ def cb(c):
     if c.data == "back": main_menu(c.message, edit=True)
     elif c.data == "check":
         if check_sub(cid): main_menu(c.message)
-        else: bot.answer_callback_query(c.id, "❌ لم تشترك بعد في جميع القنوات!", show_alert=True)
+        else: bot.answer_callback_query(c.id, "❌ لم تشترك بعد في القنوات!", show_alert=True)
     
-    # --- قسم الخدمات (كل دولة في سطر مستقل) ---
+    # --- الخدمات ---
     elif c.data == "cat_wa":
         bot.edit_message_text("📱 **WhatsApp Services:**\n\n• France: $0.50 (50ن)\n\n• Gabon: $0.25 (25ن)\n\n• Germany: $0.20 (20ن)\n\n• Ghana: $0.15 (15ن)\n\n• Madagascar: $0.30 (30ن)\n\n• Nigeria: $0.20 (20ن)\n\n• Sudan: $0.15 (15ن)\n\n• Ukraine: $0.40 (40ن)\n\n• Venezuela: $0.25 (25ن)", cid, mid, reply_markup=back_kb)
     elif c.data == "cat_tg":
@@ -69,11 +69,9 @@ def cb(c):
     elif c.data == "cat_goog":
         bot.edit_message_text("🔍 **Google Services:**\n\n• Venezuela: $0.20 (20ن)", cid, mid, reply_markup=back_kb)
     
-    # --- قسم الدفع (متباعد) ---
+    # --- الدفع والنجوم ---
     elif c.data == "pay":
         bot.edit_message_text("💳 **طرق الدفع (USDT):**\n\n🔹 **Polygon:**\n`0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n\n🔹 **BEP20:**\n`0xA7fE0a5Ae6Adcd5b47df238F836449b4d0866155`\n\n🔹 **ERC20:**\n`0x8D7dDE7719e9d6D3e5175CE170Fae00372715493`\n\n🔹 **TRC20:**\n`TRHUB8kuMpdCoDzST6c4AJ4cJdk6Ttoz97`", cid, mid, reply_markup=back_kb, parse_mode="Markdown")
-        
-    # --- قسم النجوم (متباعد) ---
     elif c.data == "stars":
         bot.edit_message_text("⭐️ **متجر النجوم:**\n\n• النجمة الواحدة = 0.015$\n\n🎁 **الهدايا:**\n\n• دب: $0.2\n\n• وردة: $0.29\n\n• كيكة: $0.55\n\n• خاتم: $1.1", cid, mid, reply_markup=back_kb)
 
